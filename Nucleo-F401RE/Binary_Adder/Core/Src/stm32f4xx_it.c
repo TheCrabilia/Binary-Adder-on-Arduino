@@ -58,8 +58,7 @@
 /* External variables --------------------------------------------------------*/
 
 /* USER CODE BEGIN EV */
-extern int delay;
-extern int mode;
+extern run;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -220,14 +219,7 @@ void EXTI15_10_IRQHandler(void)
 
 	for(int i = 0; i < 65535; i++);
 	if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)) {
-		if (delay == 200) {
-			delay = 1000;
-			mode = 1;
-		}
-		else {
-			delay = 200;
-			mode = 0;
-		}
+		run = 0;
 	}
 
   /* USER CODE END EXTI15_10_IRQn 0 */

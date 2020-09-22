@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-//#include <stdbool.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,9 +43,8 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-int delay = 200;
-int mode = 0;
-int total = 0;
+int run = 1;
+int dataArray[12] = {};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -53,7 +52,9 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+void fillArray(int pointer);
+void processData(int data);
+void writeData(char data[4]);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -92,6 +93,10 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  int firstNumber = 0;
+  int secondNumber = 0;
+  int total = 0;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -101,6 +106,22 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+	  fillArray(1);
+	  fillArray(2);
+
+	  firstNumber = (dataArray[0]*32) + (dataArray[1]*16) + (dataArray[2]*8) + (dataArray[3]*4) + (dataArray[4]*2) + (dataArray[5]*1);
+	  secondNumber = (dataArray[6]*32) + (dataArray[7]*16) + (dataArray[8]*8) + (dataArray[9]*4) + (dataArray[10]*2) + (dataArray[11]*1);
+	  total = firstNumber + secondNumber;
+
+	  processData(total);
+
+	  HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
+	  HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
+	  HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
+	  HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_RESET);
+
+	  /*
 	  HAL_GPIO_TogglePin(modeLed_GPIO_Port, modeLed_Pin);
 	  HAL_Delay(delay);
 
@@ -145,6 +166,7 @@ int main(void)
 		  HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
 		  total = total - 1;
 	  }
+	  */
   }
   /* USER CODE END 3 */
 }
@@ -296,6 +318,165 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void fillArray(int pointer) {
+	extern int dataArray[];
+	// Do while blue button is not pressed
+	while (run == 1) {
+		if (pointer == 1) {
+			// Read all input pins for first number
+			dataArray[0] = HAL_GPIO_ReadPin(n1d2_GPIO_Port, n1d2_Pin);
+			dataArray[1] = HAL_GPIO_ReadPin(n1d1_GPIO_Port, n1d1_Pin);
+			dataArray[2] = HAL_GPIO_ReadPin(n1d0_GPIO_Port, n1d0_Pin);
+			dataArray[3] = HAL_GPIO_ReadPin(n0d2_GPIO_Port, n0d2_Pin);
+			dataArray[4] = HAL_GPIO_ReadPin(n0d1_GPIO_Port, n0d1_Pin);
+			dataArray[5] = HAL_GPIO_ReadPin(n0d0_GPIO_Port, n0d0_Pin);
+		}
+		else if (pointer == 2) {
+			// Read all input pins for second number
+			dataArray[6] = HAL_GPIO_ReadPin(n1d2_GPIO_Port, n1d2_Pin);
+			dataArray[7] = HAL_GPIO_ReadPin(n1d1_GPIO_Port, n1d1_Pin);
+			dataArray[8] = HAL_GPIO_ReadPin(n1d0_GPIO_Port, n1d0_Pin);
+			dataArray[9] = HAL_GPIO_ReadPin(n0d2_GPIO_Port, n0d2_Pin);
+			dataArray[10] = HAL_GPIO_ReadPin(n0d1_GPIO_Port, n0d1_Pin);
+			dataArray[11] = HAL_GPIO_ReadPin(n0d0_GPIO_Port, n0d0_Pin);
+		}
+	}
+	run = 1;
+}
+
+void processData(int data) {
+	// Defining vars
+	int outputArray[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+	int startPos;
+	int endPos;
+	char partOne[4];
+	char partTwo[4];
+	char tmp[1];
+	// Converting decimal number to binary
+	for (int i=0; data > 0; i++) {
+		outputArray[i] = data % 2;
+		data = data / 2;
+	}
+
+	// Process first binary number part
+	startPos = 7;
+	endPos = 4;
+	for (; startPos >= endPos; startPos--) {
+		strcat(partOne, itoa(outputArray[startPos], tmp, 10));
+	}
+
+	// Process second binary number part
+	startPos = 3;
+	endPos = 0;
+	for (; startPos >= endPos; startPos--) {
+		strcat(partTwo, itoa(outputArray[startPos], tmp, 10));
+	}
+
+	writeData(partOne);
+	HAL_Delay(2000);
+	writeData(partTwo);
+	HAL_Delay(3000);
+}
+
+void writeData(char data[4]) {
+	if (strcmp(data, "0000") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_RESET);
+	}
+	else if (strcmp(data, "0001") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
+	}
+	else if (strcmp(data, "0010") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_RESET);
+	}
+	else if (strcmp(data, "0011") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
+	}
+	else if (strcmp(data, "0100") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_RESET);
+	}
+	else if (strcmp(data, "0101") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
+	}
+	else if (strcmp(data, "0110") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_RESET);
+	}
+	else if (strcmp(data, "0111") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
+	}
+	else if (strcmp(data, "1000") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_RESET);
+	}
+	else if (strcmp(data, "1001") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
+	}
+	else if (strcmp(data, "1010") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_RESET);
+	}
+	else if (strcmp(data, "1011") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
+	}
+	else if (strcmp(data, "1100") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_RESET);
+	}
+	else if (strcmp(data, "1101") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
+	}
+	else if (strcmp(data, "1110") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_RESET);
+	}
+	else if (strcmp(data, "1111") == 0) {
+		HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
+	}
+}
 
 /* USER CODE END 4 */
 
