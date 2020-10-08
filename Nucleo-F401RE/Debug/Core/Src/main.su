@@ -1,0 +1,11 @@
+main.c:73:5:main	8	static
+main.c:143:6:SystemClock_Config	88	static
+main.c:188:13:MX_USART2_UART_Init	8	static
+main.c:221:13:MX_GPIO_Init	48	static
+main.c:281:13:writeOutput	16	static
+main.c:315:13:waitButtonReseased	24	static
+main.c:336:6:takeAction	8	static
+main.c:360:13:simpleLedAnimation	16	static
+main.c:390:13:disableAllLeds	8	static
+main.c:398:13:enableAllLeds	8	static
+main.c:411:6:Error_Handler	4	static
