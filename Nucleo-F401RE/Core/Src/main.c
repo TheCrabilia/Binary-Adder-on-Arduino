@@ -43,9 +43,14 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-enum btnName {buttonZero, buttonOne};
+enum btnName {zButton, oButton};	// zButton - 0 button, oButton - 1 button
 enum numberSign {positive, negative};
-static char binaryNumber = 0b0000;
+enum bool {false, true};
+
+short binaryNumber = 0b0000;
+unsigned char zButtonPressed = false;
+unsigned char oButtonPressed = false;
+unsigned char aButtonPressed = false;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -54,11 +59,11 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 static void writeOutput(unsigned char sign, unsigned char binaryNumber);
-static void waitButtonReseased(unsigned char button);
 static void simpleLedAnimation(void);
 static void disableAllLeds(void);
 static void enableAllLeds(void);
-void takeAction(void);
+static void takeAction(void);
+static void updateBinaryNumber(unsigned char button);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -106,29 +111,19 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  // If the button of one pressed
-	  if (HAL_GPIO_ReadPin(btn_one_GPIO_Port, btn_one_Pin) == GPIO_PIN_SET) {
-		  waitButtonReseased(buttonOne);
-		  if (binaryNumber == 0b0000) {
-			  binaryNumber += 0b0001;
-		  }
-		  else if (binaryNumber < 0b1000) {
-			  binaryNumber = binaryNumber << 1;
-			  binaryNumber += 0b0001;
-		  }
-		  else {
-		  	  continue;
-		  }
+
+	  // Events
+	  if (zButtonPressed == true) {
+		  zButtonPressed = false;
+		  updateBinaryNumber(zButton);
 	  }
-	  // If the button of zero pressed
-	  if (HAL_GPIO_ReadPin(btn_zero_GPIO_Port, btn_zero_Pin) == GPIO_PIN_SET) {
-		  waitButtonReseased(buttonZero);
-		  if (binaryNumber == 0b0000 || binaryNumber >= 0b1000) {
-			  continue;
-		  }
-		  else {
-			  binaryNumber = binaryNumber << 1;
-		  }
+	  if (oButtonPressed == true) {
+		  oButtonPressed = false;
+		  updateBinaryNumber(oButton);
+	  }
+	  if (aButtonPressed == true) {
+		  aButtonPressed = false;
+		  takeAction();
 	  }
 
 	  writeOutput(positive, binaryNumber);
@@ -237,15 +232,9 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : actionBtn_Pin */
-  GPIO_InitStruct.Pin = actionBtn_Pin;
+  /*Configure GPIO pins : actionBtn_Pin btn_zero_Pin btn_one_Pin */
+  GPIO_InitStruct.Pin = actionBtn_Pin|btn_zero_Pin|btn_one_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(actionBtn_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : btn_zero_Pin btn_one_Pin */
-  GPIO_InitStruct.Pin = btn_zero_Pin|btn_one_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
@@ -271,6 +260,12 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(led4_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 1);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 1);
+  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 1);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
@@ -279,12 +274,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 static void writeOutput(unsigned char sign, unsigned char binaryNumber) {
-	// Disables all LEDs
-	HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_RESET);
-
+	disableAllLeds();
 	if (sign == negative) {
 		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 	}
@@ -312,28 +302,31 @@ static void writeOutput(unsigned char sign, unsigned char binaryNumber) {
 }
 
 
-static void waitButtonReseased(unsigned char button) {
-	unsigned char buttonState = 1;
-
-	while (buttonState == 1) {
-		switch (button) {
-		case buttonOne:
-			if (HAL_GPIO_ReadPin(btn_one_GPIO_Port, btn_one_Pin) == GPIO_PIN_RESET) {
-				buttonState = 0;
-			}
-			break;
-
-		case buttonZero:
-			if (HAL_GPIO_ReadPin(btn_zero_GPIO_Port, btn_zero_Pin) == GPIO_PIN_RESET) {
-				buttonState = 0;
-			}
-			break;
+static void updateBinaryNumber(unsigned char button) {
+	if (button == oButton) {
+		if (binaryNumber == 0b0000) {
+			binaryNumber += 0b0001;
+		}
+		else if (binaryNumber < 0b1000) {
+			binaryNumber = binaryNumber << 1;
+			binaryNumber += 0b0001;
+		}
+		else {
+			return;
+		}
+	}
+	if (button == zButton) {
+		if (binaryNumber == 0b0000 || binaryNumber >= 0b1000) {
+			return;
+		}
+		else {
+			binaryNumber = binaryNumber << 1;
 		}
 	}
 }
 
 
-void takeAction(void) {
+static void takeAction(void) {
 	static unsigned char funcExecCounter;
 	static char num1, num2;
 
@@ -358,31 +351,34 @@ void takeAction(void) {
 
 
 static void simpleLedAnimation(void) {
+	unsigned int delay = 300;
+
 	disableAllLeds();
 	for (int i = 0; i < 4; i++) {
 		switch (i) {
 		case 0:
 			HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_SET);
-			HAL_Delay(200);
+			HAL_Delay(delay);
 			break;
 		case 1:
 			HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_SET);
-			HAL_Delay(200);
+			HAL_Delay(delay);
 			break;
 		case 2:
 			HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
-			HAL_Delay(200);
+			HAL_Delay(delay);
 			break;
 		case 3:
 			HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
-			HAL_Delay(200);
+			HAL_Delay(delay);
 			break;
 		}
 	}
 	enableAllLeds();
+	HAL_Delay(delay);
 	disableAllLeds();
 }
 
