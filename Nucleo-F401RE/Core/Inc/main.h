@@ -58,35 +58,56 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define actionBtn_Pin GPIO_PIN_13
-#define actionBtn_GPIO_Port GPIOC
-#define actionBtn_EXTI_IRQn EXTI15_10_IRQn
-#define btn_zero_Pin GPIO_PIN_0
-#define btn_zero_GPIO_Port GPIOC
-#define btn_zero_EXTI_IRQn EXTI0_IRQn
-#define btn_one_Pin GPIO_PIN_3
-#define btn_one_GPIO_Port GPIOC
-#define btn_one_EXTI_IRQn EXTI3_IRQn
 #define USART_TX_Pin GPIO_PIN_2
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
 #define USART_RX_GPIO_Port GPIOA
-#define LD2_Pin GPIO_PIN_5
-#define LD2_GPIO_Port GPIOA
-#define led8_Pin GPIO_PIN_7
-#define led8_GPIO_Port GPIOA
-#define led2_Pin GPIO_PIN_7
-#define led2_GPIO_Port GPIOC
-#define led1_Pin GPIO_PIN_9
-#define led1_GPIO_Port GPIOA
+#define led3_2_Pin GPIO_PIN_5
+#define led3_2_GPIO_Port GPIOA
+#define led2_32_Pin GPIO_PIN_6
+#define led2_32_GPIO_Port GPIOA
+#define led2_8_Pin GPIO_PIN_7
+#define led2_8_GPIO_Port GPIOA
+#define led3_4_Pin GPIO_PIN_5
+#define led3_4_GPIO_Port GPIOC
+#define led1_4_Pin GPIO_PIN_1
+#define led1_4_GPIO_Port GPIOB
+#define led1_16_Pin GPIO_PIN_2
+#define led1_16_GPIO_Port GPIOB
+#define led1_2_Pin GPIO_PIN_10
+#define led1_2_GPIO_Port GPIOB
+#define led2_4_Pin GPIO_PIN_12
+#define led2_4_GPIO_Port GPIOB
+#define test2_Pin GPIO_PIN_15
+#define test2_GPIO_Port GPIOB
+#define led3_16_Pin GPIO_PIN_6
+#define led3_16_GPIO_Port GPIOC
+#define led2_1_Pin GPIO_PIN_7
+#define led2_1_GPIO_Port GPIOC
+#define test1_Pin GPIO_PIN_8
+#define test1_GPIO_Port GPIOC
+#define led3_0_Pin GPIO_PIN_9
+#define led3_0_GPIO_Port GPIOC
+#define led1_8_Pin GPIO_PIN_8
+#define led1_8_GPIO_Port GPIOA
+#define led1_32_Pin GPIO_PIN_9
+#define led1_32_GPIO_Port GPIOA
+#define led2_16_Pin GPIO_PIN_11
+#define led2_16_GPIO_Port GPIOA
+#define led3_1_Pin GPIO_PIN_12
+#define led3_1_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
-#define led4_Pin GPIO_PIN_6
-#define led4_GPIO_Port GPIOB
+#define led2_2_Pin GPIO_PIN_6
+#define led2_2_GPIO_Port GPIOB
+#define led3_32_Pin GPIO_PIN_8
+#define led3_32_GPIO_Port GPIOB
+#define led3_8_Pin GPIO_PIN_9
+#define led3_8_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

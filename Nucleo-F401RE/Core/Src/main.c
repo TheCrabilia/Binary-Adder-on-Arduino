@@ -102,6 +102,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -112,6 +113,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
+	  /*
 	  // Events
 	  if (zButtonPressed == true) {
 		  zButtonPressed = false;
@@ -127,6 +129,9 @@ int main(void)
 	  }
 
 	  writeOutput(positive, binaryNumber);
+	  */
+	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
+	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
   }
   /* USER CODE END 3 */
 }
@@ -224,56 +229,59 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LD2_Pin|led8_Pin|led1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, led3_2_Pin|led2_32_Pin|led2_8_Pin|led1_8_Pin
+                          |led1_32_Pin|led2_16_Pin|led3_1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, led3_4_Pin|led3_16_Pin|led2_1_Pin|led3_0_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, led1_4_Pin|led1_16_Pin|led1_2_Pin|led2_4_Pin
+                          |led2_2_Pin|led3_32_Pin|led3_8_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : actionBtn_Pin btn_zero_Pin btn_one_Pin */
-  GPIO_InitStruct.Pin = actionBtn_Pin|btn_zero_Pin|btn_one_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : LD2_Pin led8_Pin led1_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin|led8_Pin|led1_Pin;
+  /*Configure GPIO pins : led3_2_Pin led2_32_Pin led2_8_Pin led1_8_Pin
+                           led1_32_Pin led2_16_Pin led3_1_Pin */
+  GPIO_InitStruct.Pin = led3_2_Pin|led2_32_Pin|led2_8_Pin|led1_8_Pin
+                          |led1_32_Pin|led2_16_Pin|led3_1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : led2_Pin */
-  GPIO_InitStruct.Pin = led2_Pin;
+  /*Configure GPIO pins : led3_4_Pin led3_16_Pin led2_1_Pin led3_0_Pin */
+  GPIO_InitStruct.Pin = led3_4_Pin|led3_16_Pin|led2_1_Pin|led3_0_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(led2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : led4_Pin */
-  GPIO_InitStruct.Pin = led4_Pin;
+  /*Configure GPIO pins : led1_4_Pin led1_16_Pin led1_2_Pin led2_4_Pin
+                           led2_2_Pin led3_32_Pin led3_8_Pin */
+  GPIO_InitStruct.Pin = led1_4_Pin|led1_16_Pin|led1_2_Pin|led2_4_Pin
+                          |led2_2_Pin|led3_32_Pin|led3_8_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(led4_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 1);
-  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+  /*Configure GPIO pin : test2_Pin */
+  GPIO_InitStruct.Pin = test2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(test2_GPIO_Port, &GPIO_InitStruct);
 
-  HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 1);
-  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 1);
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+  /*Configure GPIO pin : test1_Pin */
+  GPIO_InitStruct.Pin = test1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(test1_GPIO_Port, &GPIO_InitStruct);
 
 }
 
 /* USER CODE BEGIN 4 */
 
 static void writeOutput(unsigned char sign, unsigned char binaryNumber) {
+	/*
 	disableAllLeds();
 	if (sign == negative) {
 		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
@@ -299,10 +307,12 @@ static void writeOutput(unsigned char sign, unsigned char binaryNumber) {
 		HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
 		binaryNumber = binaryNumber - 1;
 	}
+	*/
 }
 
 
 static void updateBinaryNumber(unsigned char button) {
+	/*
 	if (button == oButton) {
 		if (binaryNumber == 0b0000) {
 			binaryNumber += 0b0001;
@@ -323,10 +333,12 @@ static void updateBinaryNumber(unsigned char button) {
 			binaryNumber = binaryNumber << 1;
 		}
 	}
+	*/
 }
 
 
 static void takeAction(void) {
+	/*
 	static unsigned char funcExecCounter;
 	static char num1, num2;
 
@@ -347,10 +359,12 @@ static void takeAction(void) {
 		simpleLedAnimation();
 		funcExecCounter = 0;
 	}
+	*/
 }
 
 
 static void simpleLedAnimation(void) {
+	/*
 	unsigned int delay = 300;
 
 	disableAllLeds();
@@ -380,22 +394,17 @@ static void simpleLedAnimation(void) {
 	enableAllLeds();
 	HAL_Delay(delay);
 	disableAllLeds();
+	*/
 }
 
 
 static void disableAllLeds(void) {
-	HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_RESET);
+
 }
 
 
 static void enableAllLeds(void) {
-	HAL_GPIO_WritePin(led8_GPIO_Port, led8_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(led4_GPIO_Port, led4_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
+
 }
 
 /* USER CODE END 4 */
