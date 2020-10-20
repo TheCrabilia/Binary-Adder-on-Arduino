@@ -44,9 +44,11 @@
 /* USER CODE BEGIN PV */
 enum bool {false, true};
 
-extern unsigned char zButtonPressed;
 extern unsigned char oButtonPressed;
-extern unsigned char aButtonPressed;
+extern unsigned char zButtonPressed;
+extern unsigned char pButtonPressed;
+extern unsigned char mButtonPressed;
+extern unsigned char eButtonPressed;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -200,6 +202,119 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f4xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles RCC global interrupt.
+  */
+void RCC_IRQHandler(void)
+{
+  /* USER CODE BEGIN RCC_IRQn 0 */
+
+  /* USER CODE END RCC_IRQn 0 */
+  /* USER CODE BEGIN RCC_IRQn 1 */
+
+  /* USER CODE END RCC_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line0 interrupt.
+  */
+void EXTI0_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI0_IRQn 0 */
+
+	// B4_M_Pin
+	for (int i = 0; i < 65535; i++);
+	if (HAL_GPIO_ReadPin(B4_M_GPIO_Port, B4_M_Pin)) {
+		mButtonPressed = true;
+	}
+
+  /* USER CODE END EXTI0_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+  /* USER CODE BEGIN EXTI0_IRQn 1 */
+
+  /* USER CODE END EXTI0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line1 interrupt.
+  */
+void EXTI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI1_IRQn 0 */
+
+	// B5_E_Pin
+	for (int i = 0; i < 65535; i++);
+	if (HAL_GPIO_ReadPin(B5_E_GPIO_Port, B5_E_Pin)) {
+		eButtonPressed = true;
+	}
+
+  /* USER CODE END EXTI1_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
+  /* USER CODE BEGIN EXTI1_IRQn 1 */
+
+  /* USER CODE END EXTI1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line4 interrupt.
+  */
+void EXTI4_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI4_IRQn 0 */
+
+	// B3_P_Pin
+	for (int i = 0; i < 65535; i++);
+	if (HAL_GPIO_ReadPin(B3_P_GPIO_Port, B3_P_Pin)) {
+		pButtonPressed = true;
+	}
+
+  /* USER CODE END EXTI4_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
+  /* USER CODE BEGIN EXTI4_IRQn 1 */
+
+  /* USER CODE END EXTI4_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line[9:5] interrupts.
+  */
+void EXTI9_5_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI9_5_IRQn 0 */
+
+	// B2_Z_Pin
+	for (int i = 0; i < 65535; i++);
+	if (HAL_GPIO_ReadPin(B2_Z_GPIO_Port, B2_Z_Pin)) {
+		zButtonPressed = true;
+	}
+
+  /* USER CODE END EXTI9_5_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_7);
+  /* USER CODE BEGIN EXTI9_5_IRQn 1 */
+
+  /* USER CODE END EXTI9_5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line[15:10] interrupts.
+  */
+void EXTI15_10_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI15_10_IRQn 0 */
+
+	// B1_O_Pin
+	for (int i = 0; i < 65535; i++);
+	if (HAL_GPIO_ReadPin(B1_O_GPIO_Port, B1_O_Pin)) {
+		oButtonPressed = true;
+	}
+
+  /* USER CODE END EXTI15_10_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_15);
+  /* USER CODE BEGIN EXTI15_10_IRQn 1 */
+
+  /* USER CODE END EXTI15_10_IRQn 1 */
+}
 
 /* USER CODE BEGIN 1 */
 
