@@ -58,16 +58,18 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define B5_E_Pin GPIO_PIN_1
+#define B4_M_Pin GPIO_PIN_0
+#define B4_M_GPIO_Port GPIOC
+#define B2_Z_Pin GPIO_PIN_1
+#define B2_Z_GPIO_Port GPIOC
+#define B3_P_Pin GPIO_PIN_2
+#define B3_P_GPIO_Port GPIOC
+#define B5_E_Pin GPIO_PIN_3
 #define B5_E_GPIO_Port GPIOC
-#define B5_E_EXTI_IRQn EXTI1_IRQn
 #define USART_TX_Pin GPIO_PIN_2
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
 #define USART_RX_GPIO_Port GPIOA
-#define B3_P_Pin GPIO_PIN_4
-#define B3_P_GPIO_Port GPIOA
-#define B3_P_EXTI_IRQn EXTI4_IRQn
 #define LED1_32_Pin GPIO_PIN_5
 #define LED1_32_GPIO_Port GPIOA
 #define LED2_2_Pin GPIO_PIN_6
@@ -76,9 +78,6 @@ void Error_Handler(void);
 #define LED2_8_GPIO_Port GPIOA
 #define LED1_16_Pin GPIO_PIN_5
 #define LED1_16_GPIO_Port GPIOC
-#define B4_M_Pin GPIO_PIN_0
-#define B4_M_GPIO_Port GPIOB
-#define B4_M_EXTI_IRQn EXTI0_IRQn
 #define LED3_16_Pin GPIO_PIN_1
 #define LED3_16_GPIO_Port GPIOB
 #define LED3_4_Pin GPIO_PIN_2
@@ -87,8 +86,6 @@ void Error_Handler(void);
 #define LED3_32_GPIO_Port GPIOB
 #define LED2_16_Pin GPIO_PIN_12
 #define LED2_16_GPIO_Port GPIOB
-#define LED3_0_Pin GPIO_PIN_14
-#define LED3_0_GPIO_Port GPIOB
 #define LED1_4_Pin GPIO_PIN_6
 #define LED1_4_GPIO_Port GPIOC
 #define LED3_1_Pin GPIO_PIN_7
@@ -103,22 +100,14 @@ void Error_Handler(void);
 #define LED2_4_GPIO_Port GPIOA
 #define LED2_1_Pin GPIO_PIN_12
 #define LED2_1_GPIO_Port GPIOA
-#define TMS_Pin GPIO_PIN_13
-#define TMS_GPIO_Port GPIOA
-#define TCK_Pin GPIO_PIN_14
-#define TCK_GPIO_Port GPIOA
 #define B1_O_Pin GPIO_PIN_15
 #define B1_O_GPIO_Port GPIOA
-#define B1_O_EXTI_IRQn EXTI15_10_IRQn
-#define SWO_Pin GPIO_PIN_3
-#define SWO_GPIO_Port GPIOB
 #define LED3_64_Pin GPIO_PIN_4
 #define LED3_64_GPIO_Port GPIOB
+#define LED3_0_Pin GPIO_PIN_5
+#define LED3_0_GPIO_Port GPIOB
 #define LED2_32_Pin GPIO_PIN_6
 #define LED2_32_GPIO_Port GPIOB
-#define B2_Z_Pin GPIO_PIN_7
-#define B2_Z_GPIO_Port GPIOB
-#define B2_Z_EXTI_IRQn EXTI9_5_IRQn
 #define LED1_2_Pin GPIO_PIN_8
 #define LED1_2_GPIO_Port GPIOB
 #define LED1_8_Pin GPIO_PIN_9
